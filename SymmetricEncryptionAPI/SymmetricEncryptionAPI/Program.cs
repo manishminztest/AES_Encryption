@@ -1,4 +1,8 @@
 
+using log4net.Config;
+using log4net;
+using System.Reflection;
+
 namespace SymmetricEncryptionAPI
 {
     public class Program
@@ -8,6 +12,10 @@ namespace SymmetricEncryptionAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            // Configure log4net
+            var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+            XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 
             builder.Services.AddCors(option =>
             {
@@ -25,6 +33,9 @@ namespace SymmetricEncryptionAPI
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            var logger = LogManager.GetLogger(typeof(Program));
+            logger.Info("Application Starting");
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
